@@ -1,0 +1,43 @@
+---
+import { identity, ui } from '../content/site';
+const blurLayers = Array.from({ length: 8 }, (_, index) => ({
+  blur: 0.5 * 2 ** index,
+  mask: `linear-gradient(to top, transparent ${index * 12.5}%, #000 ${(index + 1) * 12.5}%${index < 7 ? `, #000 ${(index + 2) * 12.5}%` : ''}${index < 6 ? `, transparent ${(index + 3) * 12.5}%` : ''})`,
+}));
+---
+<header class="site-header">
+  <div class="header-blur" aria-hidden="true">
+    {blurLayers.map(({ blur, mask }) => <span style={`--blur: ${blur}px; --mask: ${mask};`} />)}
+  </div>
+  <div class="header-inner container">
+    <a class="identity" href="/">
+      <span>{identity.name}</span>
+      <span class="headline">{identity.headline}</span>
+    </a>
+    <nav aria-label={ui.navigation}>
+      {ui.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+  </div>
+</header>
+<style>
+  .site-header { position: fixed; inset: 0 0 auto; z-index: 20; }
+  .site-header::before, .header-blur { position: absolute; inset: 0 0 -62px; pointer-events: none; }
+  .site-header::before { content: ''; background: linear-gradient(var(--paper), #ffffffb3 45%, #ffffff00); }
+  .header-blur span { position: absolute; inset: 0; -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); -webkit-mask-image: var(--mask); mask-image: var(--mask); }
+  .header-inner { position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-block: 24px; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-header { background: var(--paper); }
+  }
+  .identity { text-decoration: none; display: grid; gap: 3px; font-size: 15px; }
+  .headline { font-size: 12px; color: var(--muted); letter-spacing: -.01em; }
+  nav { display: flex; gap: 20px; }
+  nav a { min-height: 44px; display: inline-flex; align-items: flex-start; padding-block: 2px; text-decoration: none; }
+  nav a:hover { text-decoration: underline; }
+  @media (max-width: 809px) {
+    .header-inner { flex-direction: column; gap: 8px; padding-block: 16px 4px; }
+    .identity { font-size: 14px; }
+    .headline { max-width: 310px; font-size: 12px; }
+    nav { gap: 22px; }
+    nav a { min-height: 36px; font-size: 14px; }
+  }
+</style>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ui } from '../content/site';
+---
+<BaseLayout title="404" description={ui.notFoundDescription} noindex>
+  <section class="page-heading container error-page">
+    <p class="label">404</p>
+    <h1 data-motion="text">{ui.notFound}</h1>
+    <p class="intro">{ui.notFoundDescription}</p>
+    <a class="button" href="/">{ui.home} ↗</a>
+  </section>
+</BaseLayout>
+<style>.error-page { min-height: 80vh; } .error-page .button { margin-top: 36px; }</style>

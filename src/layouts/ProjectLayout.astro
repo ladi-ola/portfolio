@@ -1,0 +1,66 @@
+---
+import type { MarkdownInstance } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Gallery from '../components/Gallery.astro';
+import Architecture from '../components/Architecture.astro';
+import { projects, type ProjectMeta } from '../lib/projects';
+import { ui } from '../content/site';
+interface Props { project: MarkdownInstance<ProjectMeta> }
+const { project } = Astro.props;
+const { frontmatter: meta, Content, getHeadings } = project;
+const headings = getHeadings().filter((heading) => heading.depth === 2);
+const next = projects[(projects.indexOf(project) + 1) % projects.length];
+---
+<BaseLayout title={meta.title} description={meta.summary}>
+  <header class="page-heading container">
+    <a class="text-link small muted" href="/projects"><span aria-hidden="true">←</span>{ui.back}</a>
+    <h1 data-motion="text">{meta.title}</h1>
+    <p class="intro" data-motion="reveal" data-motion-delay="0.1">{meta.summary}</p>
+    <dl class="project-meta" data-motion="reveal" data-motion-delay="0.2">
+      <div><dt>{ui.role}</dt><dd>{meta.role}</dd></div>
+      <div><dt>{ui.dates}</dt><dd>{meta.dates}</dd></div>
+      <div><dt>{ui.status}</dt><dd>{meta.status}</dd></div>
+    </dl>
+    {meta.links?.length ? <div class="project-links">{meta.links.map((link) => <a class="button" href={link.href} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}</div> : null}
+  </header>
+  <div class="container"><Gallery slug={meta.slug} title={meta.title} /></div>
+  <div class="section container section-grid case-study">
+    <aside>
+      <nav class="contents" aria-label={ui.onThisPage}>
+        <p class="label">{ui.onThisPage}</p>
+        {headings.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+        {meta.diagram && <a href="#architecture-diagram">{ui.architecture}</a>}
+      </nav>
+    </aside>
+    <article class="prose" aria-label={meta.title} data-motion-content>
+      <Content />
+      {meta.diagram && <Architecture diagram={meta.diagram} slug={meta.slug} />}
+    </article>
+  </div>
+  {next && next.frontmatter.slug !== meta.slug && <section class="container next-project">
+    <p class="label" data-motion="reveal">{ui.nextProject}</p>
+    <a href={`/projects/${next.frontmatter.slug}`}>{next.frontmatter.title}<span aria-hidden="true">↗</span></a>
+    <p class="muted">{next.frontmatter.cardSummary}</p>
+  </section>}
+</BaseLayout>
+<style>
+  .project-meta { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 30px; margin-block: 48px 0; }
+  dt { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  dd { margin: 0; font-size: 14px; }
+  .project-links { margin-top: 30px; }
+  .contents { position: sticky; top: 140px; display: grid; gap: 14px; align-content: start; font-size: 13px; }
+  .contents p { margin-bottom: 8px; }
+  .contents a { text-decoration: none; color: var(--muted); }
+  .contents a:hover { color: var(--ink); text-decoration: underline; }
+  .case-study { padding-top: 100px; }
+  .next-project { border-top: 1px solid var(--line); padding-block: 60px 100px; }
+  .next-project > a { display: flex; justify-content: space-between; text-decoration: none; font-size: 40px; margin-block: 20px; }
+  .next-project > a:hover { color: var(--accent); }
+  @media (max-width: 809px) {
+    .project-meta { grid-template-columns: 1fr; gap: 24px; margin-top: 32px; }
+    .contents { position: static; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 12px; }
+    .contents > p { width: 100%; }
+    .contents > a { min-height: 32px; }
+    .case-study { padding-top: 64px; }
+  }
+</style>

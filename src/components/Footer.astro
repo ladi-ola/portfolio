@@ -1,0 +1,17 @@
+---
+import { identity, ui } from '../content/site';
+---
+<footer class="container site-footer">
+  <div class="footer-name"><span>{identity.name}</span><span class="muted small">{identity.headline}</span></div>
+  <div class="footer-links">
+    <a href={identity.linkedin} target="_blank" rel="noopener noreferrer">{ui.linkedinName} ↗</a>
+    <a href={identity.github} target="_blank" rel="noopener noreferrer">{ui.github} ↗</a>
+  </div>
+</footer>
+<style>
+  .site-footer { border-top: 1px solid var(--line); padding-block: 32px 48px; display: flex; gap: 30px; justify-content: space-between; font-size: 14px; }
+  .footer-name { display: grid; gap: 5px; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { min-height: 44px; }
+  @media (max-width: 809px) { .site-footer { flex-direction: column; } .footer-name .small { font-size: 12px; } }
+</style>

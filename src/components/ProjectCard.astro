@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import { projectCover, type ProjectMeta } from '../lib/projects';
+import { ui } from '../content/site';
+interface Props { project: ProjectMeta; eager?: boolean; heading?: 'h2' | 'h3' }
+const { project, eager = false, heading: Heading = 'h3' } = Astro.props;
+const cover = projectCover(project);
+---
+<a class="project-card" href={`/projects/${project.slug}`}>
+  <div class="project-visual" data-motion="reveal">
+    {cover ? <div data-parallax><Image src={cover.image} alt={`${project.title} — ${ui.interfaceScreenshot}`} widths={[360, 640, 960, 1440, 1920]} sizes="(max-width: 809px) calc(100vw - 72px), 888px" width={1920} format="webp" quality={85} loading={eager ? 'eager' : 'lazy'} decoding="async" /></div> : <div class="empty-image">{ui.placeholder}</div>}
+  </div>
+  <div class="project-tags" data-motion="reveal"><span>{project.title}</span>{project.tags.map((tag) => <span>{tag}</span>)}</div>
+  <div class="project-caption">
+    <Heading id={`card-${project.slug}`} data-motion="text">{project.cardSummary}</Heading>
+    <div data-motion="reveal" data-motion-delay="0.1"><p>{project.status}</p><span class="text-link">{ui.project}<span aria-hidden="true">↗</span></span></div>
+  </div>
+</a>

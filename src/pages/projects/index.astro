@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Contact from '../../components/Contact.astro';
+import { projects } from '../../lib/projects';
+import { ui, seo } from '../../content/site';
+---
+<BaseLayout title={ui.work} description={seo.projectsDescription}>
+  <header class="page-heading container"><h1 data-motion="text">{ui.work}</h1></header>
+  <section class="container project-list" aria-label={ui.allProjects}>
+    {projects.map((project, index) => <ProjectCard project={project.frontmatter} eager={index === 0} heading="h2" />)}
+  </section>
+  <Contact />
+</BaseLayout>

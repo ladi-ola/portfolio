@@ -1,0 +1,117 @@
+---
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Contact from '../components/Contact.astro';
+import profile from '../assets/profile/solomon.jpg';
+import { identity, hero, about, skills, experience, education, earlierCareer, ui } from '../content/site';
+import { projects } from '../lib/projects';
+// Build from the project root. Bundled import.meta.url points at generated chunks.
+const hasResume = existsSync(resolve('public/resume.pdf'));
+---
+<BaseLayout>
+  <section class="hero container" aria-labelledby="hero-name">
+    <div class="hero-intro">
+      <h1 id="hero-name" data-motion="text">{identity.name}</h1>
+      <p class="role-line" data-motion="text" data-motion-delay="0.12">{identity.headline}</p>
+      <p class="hero-subline" data-motion="reveal" data-motion-delay="0.25">{hero.subline}</p>
+    </div>
+    <div class="hero-actions" data-motion="reveal" data-motion-delay="0.3">
+      <p class="label status">{hero.status}</p>
+      <a class="button" href="#work">{hero.work}<span aria-hidden="true">↓</span></a>
+      <div class="secondary-actions">
+        <a class="text-link" href="#contact">{hero.contact}</a>
+        {hasResume ? <a class="text-link" href="/resume.pdf" download>{hero.resume}</a> : <span class="resume-pending">{ui.resumePending}</span>}
+      </div>
+    </div>
+  </section>
+
+  <section class="work container" id="work" aria-labelledby="work-title">
+    <h2 class="sr-only" id="work-title">{ui.work}</h2>
+    <div class="project-list">{projects.map((project, index) => <ProjectCard project={project.frontmatter} eager={index === 0} />)}</div>
+    <a class="text-link all-projects" href="/projects">{ui.allProjects}<span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="section container section-grid about" id="about" aria-labelledby="about-title">
+    <div class="about-aside">
+      <h2 class="section-title" id="about-title" data-motion="reveal">{ui.about}</h2>
+      <Image src={profile} alt={identity.name} widths={[160, 320]} sizes="160px" width={160} height={192} format="webp" loading="lazy" class="portrait" data-motion="reveal" />
+    </div>
+    <div class="about-copy stack">
+      <p class="about-lead" data-motion="text">{about.lead}</p>
+      {about.introduction.map((paragraph) => <p data-motion="reveal">{paragraph}</p>)}
+      <h3 class="work-label" data-motion="reveal">{about.workLabel}</h3>
+      <ul class="about-work">
+        {about.work.map(([label, description], index) => <li data-motion="reveal" data-motion-delay={index % 2 * 0.08}><strong>{label}:</strong> {description}</li>)}
+      </ul>
+      {about.closing.map((paragraph) => <p data-motion="reveal">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="section container section-grid" id="skills" aria-labelledby="skills-title">
+    <h2 class="section-title" id="skills-title" data-motion="reveal">{ui.skills}</h2>
+    <ol class="chips">{skills.map((skill, index) => <li data-motion="reveal" data-motion-delay={index % 3 * 0.05}>{skill}</li>)}</ol>
+  </section>
+
+  <section class="section container section-grid" id="experience" aria-labelledby="experience-title">
+    <h2 class="section-title" id="experience-title" data-motion="reveal">{ui.experience}</h2>
+    <div>
+      <ol class="timeline">
+        {experience.map((entry) => <li data-motion="reveal">
+          {entry.date && <p class="label small">{entry.date}</p>}
+          <h3>{entry.href ? <a href={entry.href}>{entry.role}<span aria-hidden="true"> ↗</span></a> : entry.role}</h3>
+          {entry.description && <p class="muted">{entry.description}</p>}
+        </li>)}
+      </ol>
+      <details class="earlier-career"><summary>{ui.earlierCareer}</summary><p class="muted">{earlierCareer}</p></details>
+      <p class="education" data-motion="reveal">{education}</p>
+    </div>
+  </section>
+
+  <Contact />
+</BaseLayout>
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 70px; align-items: end; padding-block: 320px 90px; }
+  .hero-intro h1 { font-size: 30px; margin-bottom: 12px; }
+  .role-line, .hero-subline { font-size: 26px; line-height: 1.4; letter-spacing: -.035em; }
+  .role-line { color: var(--ink); }
+  .hero-subline { color: var(--muted); margin-top: 14px; }
+  .hero-actions { display: grid; gap: 18px; }
+  .status { font-size: 13px; }
+  .secondary-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; align-items: center; }
+  .resume-pending { color: var(--muted); }
+  .work { padding-bottom: 80px; }
+  .all-projects { margin-top: 45px; }
+  .about { padding-top: 100px; }
+  .about-aside { display: grid; align-content: start; gap: 40px; }
+  .portrait { border-radius: 8px; object-fit: cover; height: 192px; }
+  .about-lead { font-size: 24px; line-height: 1.45; letter-spacing: -.035em; }
+  .about-work { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 30px; padding: 0; list-style: none; }
+  .about-work li { margin: 0; font-size: 15px; }
+  .about-work strong { display: inline; }
+  .work-label { font-size: 16px; font-weight: 650; padding-top: 16px; }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { padding-block: 0 30px; margin-block: 0 30px; border-bottom: 1px solid var(--line); }
+  .timeline h3 { font-size: 20px; margin-block: 8px 12px; }
+  .timeline a { text-decoration: none; }
+  .timeline a:hover { text-decoration: underline; }
+  .earlier-career { margin-block: 25px; }
+  .earlier-career summary { cursor: pointer; min-height: 44px; }
+  .education { font-size: 15px; }
+  @media (min-width: 810px) and (max-width: 1199px) { .hero { gap: 35px; padding-top: 240px; } }
+  @media (max-width: 809px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 200px 60px; }
+    .hero-intro h1 { font-size: 24px; }
+    .role-line, .hero-subline { font-size: 24px; }
+    .hero-actions { max-width: 360px; }
+    .secondary-actions { font-size: 13px; }
+    .work { padding-bottom: 20px; }
+    .about-aside { display: flex; justify-content: space-between; gap: 20px; align-items: start; }
+    .portrait { width: 112px; height: 134px; }
+    .about-work { gap: 24px; }
+    .about-lead { font-size: 22px; }
+  }
+  @media (max-width: 479px) { .about-work { grid-template-columns: 1fr; } }
+</style>

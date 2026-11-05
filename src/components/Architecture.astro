@@ -1,0 +1,53 @@
+---
+import type { ProjectMeta, DiagramNode } from '../lib/projects';
+import { ui } from '../content/site';
+interface Props { diagram: NonNullable<ProjectMeta['diagram']>; slug: string }
+const { diagram, slug } = Astro.props;
+const nodeWidth = 180;
+const nodeHeight = 88;
+const nodes = new Map(diagram.nodes.map((node) => [node.id, node]));
+function path(from: DiagramNode, to: DiagramNode) {
+  const vertical = Math.abs(from.y - to.y) > Math.abs(from.x - to.x);
+  if (vertical) {
+    const down = to.y > from.y;
+    const x1 = from.x + nodeWidth / 2;
+    const y1 = from.y + (down ? nodeHeight : 0);
+    const x2 = to.x + nodeWidth / 2;
+    const y2 = to.y + (down ? 0 : nodeHeight);
+    const mid = (y1 + y2) / 2;
+    return `M ${x1} ${y1} V ${mid} H ${x2} V ${y2}`;
+  }
+  const right = to.x > from.x;
+  const x1 = from.x + (right ? nodeWidth : 0);
+  const y1 = from.y + nodeHeight / 2;
+  const x2 = to.x + (right ? 0 : nodeWidth);
+  const y2 = to.y + nodeHeight / 2;
+  const mid = (x1 + x2) / 2;
+  return `M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`;
+}
+---
+<figure class="architecture" id="architecture-diagram">
+  <h2>{ui.architecture}</h2>
+  <div class="diagram-scroll" tabindex="0" role="region" aria-label={ui.architecture}>
+    <svg viewBox={`0 0 ${diagram.width} ${diagram.height}`} xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby={`${slug}-diagram-title ${slug}-diagram-description`}>
+      <title id={`${slug}-diagram-title`}>{ui.architecture}</title>
+      <desc id={`${slug}-diagram-description`}>{diagram.description}</desc>
+      <defs><marker id={`${slug}-arrow`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#686565" /></marker></defs>
+      {diagram.edges.map((edge) => <path d={path(nodes.get(edge.from)!, nodes.get(edge.to)!)} fill="none" stroke="#686565" stroke-width="1.5" marker-end={`url(#${slug}-arrow)`} />)}
+      {diagram.nodes.map((node) => <g transform={`translate(${node.x}, ${node.y})`}>
+        <rect width={nodeWidth} height={nodeHeight} rx="8" fill="#fff" stroke="#e6e5e5" />
+        <text x={nodeWidth / 2} y="34" text-anchor="middle" fill="#242323" font-size="14">{node.label}</text>
+        {node.detail && <text x={nodeWidth / 2} y="59" text-anchor="middle" fill="#686565" font-size="10">{node.detail}</text>}
+      </g>)}
+    </svg>
+  </div>
+  <figcaption>{diagram.description}</figcaption>
+</figure>
+<style>
+  .architecture { margin-top: 64px; }
+  h2 { font-size: 28px; margin-bottom: 24px; }
+  .diagram-scroll { overflow-x: auto; border-radius: 12px; background: var(--soft); }
+  svg { width: 100%; min-width: 600px; font-family: 'Manrope Variable', Arial, sans-serif; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 20px; }
+  @media (max-width: 809px) { h2 { font-size: 24px; } }
+</style>

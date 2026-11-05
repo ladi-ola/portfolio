@@ -1,0 +1,50 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { identity, seo, ui } from '../content/site';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; noindex?: boolean }
+const { title, description = seo.description, noindex = false } = Astro.props;
+const fullTitle = `${title ? `${title} | ` : ''}${identity.name} | ${identity.headline}`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const socialImage = Astro.site ? new URL('/social-preview.png', Astro.site).href : '/social-preview.png';
+const person = {
+  '@context': 'https://schema.org', '@type': 'Person',
+  name: identity.name, jobTitle: identity.headline,
+  ...(Astro.site ? { url: Astro.site.href } : {}),
+  sameAs: [identity.linkedin, identity.github],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${identity.name} — ${identity.headline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(person).replace(/</g, '\\u003c')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui.skip}</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+    <script src="../lib/motion.ts"></script>
+  </body>
+</html>

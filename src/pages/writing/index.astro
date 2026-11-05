@@ -1,0 +1,8 @@
+---
+// Scaffold only: hidden from navigation and sitemap until real writing is supplied.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../content/site';
+---
+<BaseLayout title={ui.writing} description={ui.writingDescription} noindex>
+  <section class="page-heading container"><h1 data-motion="text">{ui.writing}</h1></section>
+</BaseLayout>

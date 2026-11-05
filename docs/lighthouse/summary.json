@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-11-05T12:18:02.309Z",
+  "origin": "http://localhost:4323",
+  "note": "Local static preview, simulated mobile throttling. Not a production-host audit.",
+  "results": [
+    {
+      "route": "/",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "route": "/projects",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "route": "/projects/xleuth",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "route": "/projects/syn",
+      "performance": 99,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    }
+  ]
+}
