@@ -1,5 +1,5 @@
 export const identity = {
-  name: 'Solomon (Oladimeji) Oredola',
+  name: 'Solomon Oredola',
   headline: 'Product Designer & Full-Stack Builder | Founder, Xleuth',
   location: 'Nigeria (Lagos)',
   email: 'ladioredola@gmail.com',
@@ -81,5 +81,5 @@ export const ui = {
 
 export const seo = {
   description: 'Product designer and developer who designs and builds digital products end to end. Founder of Xleuth, a leveraged trading platform for prediction market index baskets.',
-  projectsDescription: 'Xleuth and SYN: product design and full-stack development by Solomon (Oladimeji) Oredola.',
+  projectsDescription: 'Xleuth and SYN: product design and full-stack development by Solomon Oredola.',
 };

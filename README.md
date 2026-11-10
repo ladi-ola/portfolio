@@ -1,6 +1,6 @@
 # Solomon’s portfolio
 
-Static Astro + TypeScript portfolio for **Solomon (Oladimeji) Oredola**. Content comes from `portfolio-content.md`; design follows the supplied HTML reference and its live source. The originals in `reference/`, `skills/` and the content brief are not modified.
+Static Astro + TypeScript portfolio for **Solomon Oredola**. Content comes from `portfolio-content.md`; design follows the supplied HTML reference and its live source. The originals in `reference/`, `skills/` and the content brief are not modified.
 
 ## Run
 

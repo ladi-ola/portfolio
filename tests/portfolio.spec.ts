@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 
-const name = 'Solomon (Oladimeji) Oredola';
+const name = 'Solomon Oredola';
 const headline = 'Product Designer & Full-Stack Builder | Founder, Xleuth';
 const routes = ['/', '/projects', '/projects/xleuth', '/projects/syn', '/404', '/writing'];
 const normalise = (value: string) => value.replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
@@ -25,7 +25,7 @@ for (const width of [360, 768, 1024, 1440]) {
       await expect(page.locator('.site-header')).toContainText(headline);
       await expect(page.locator('.site-footer')).toContainText(headline);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      expect(await page.locator('body').innerText()).not.toMatch(/\[TODO|\[CONFIRM|Fedor|Dimeji|QA Engineer/);
+      expect(await page.locator('body').innerText()).not.toMatch(/\[TODO|\[CONFIRM|Fedor|Oladimeji|Dimeji|QA Engineer/);
 
       for (const image of await page.locator('img:not(dialog img)').all()) {
         await image.scrollIntoViewIfNeeded();
